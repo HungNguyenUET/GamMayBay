@@ -16,9 +16,9 @@ public class GameWindow extends Frame implements Runnable{
     DanKey[] dan1 = new DanKey[100];
     DanMouse[] dan2 = new DanMouse[100];
     int i = 0;
-    int turnKey = 0; //Xac dinh l??t b?n c?a ??i t??ng ??n nào
+    int turnKey = 0; //Xac dinh luot ban cua doi tuong Dan nao
     int j = 0;
-    int turnMouse = 0;//Xác ??nh l??t b?n c?a ??i t??ng ??n nào
+    int turnMouse = 0;//Xac dinh luot ban cua doi tuong Dan nao
 
     public GameWindow(){
         this.setSize(300, 400);
@@ -26,11 +26,11 @@ public class GameWindow extends Frame implements Runnable{
         this.setVisible(true);
         player1 = new PlaneKey(100, 300, "Resources/PLANE2.png");
         player2 = new PlaneMouse(200, 100, "Resources/PLANE3.png");
-        //Kh?i t?o 100 ??i t??ng ??n cho Máy bay di chuy?n b?ng Key
+        //Khoi tao 100 doi tuong Dan cho May bay di chuyen bang Key
         for(i = 0; i < 100; i++){
             dan1[i] = new DanKey(player1.positionX + 30, player1.positionY + 10);
         }
-        //Kh?i t?o 100 d?i t??ng ??n cho máy bay di chuy?n b?ng Mouse
+        //Khoi tao 100 doi tuong Dan cho may bay di chuyen bang Mouse
         for(j = 0; j < 100; j++) {
             dan2[j] = new DanMouse(player2.positionX + 30, player2.positionY + 10);
         }
@@ -78,14 +78,14 @@ public class GameWindow extends Frame implements Runnable{
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                    player2.speedX = e.getX();
-                    player2.speedY = e.getY();
-                for(j = 0; j < 100; j++) {
+                player2.speedX = e.getX();
+                player2.speedY = e.getY();
+                for (j = 0; j < 100; j++) {
                     if (dan2[j].fire == false) {
                         dan2[j].speedX = e.getX();
                         dan2[j].speedY = e.getY();
 
-                    }else {
+                    } else {
                         dan2[j].speedY = e.getY();
                         dan2[j].fireSpeed = 3;
                     }
@@ -101,10 +101,11 @@ public class GameWindow extends Frame implements Runnable{
             public void mousePressed(MouseEvent e) {
                 dan2[turnMouse].fire = true;
                 dan2[turnMouse].fireSpeed = 3;
-                //Dùng ?? b?n liên ti?p
+                //Dung de ban lien tiep
                 turnMouse++;
                 turnMouse = turnMouse % 100;
             }
+
             //Make by Nguyen Van Hung UET
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -126,22 +127,35 @@ public class GameWindow extends Frame implements Runnable{
 
             @Override
             public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()){
-                    case  KeyEvent.VK_W:
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_D:
+                        player1.speedX = 3;
+                        player1.speedY = 0;
+                        for (i = 0; i < 100; i++) {
+                            if (dan1[i].fire == false) {
+                                dan1[i].speedX = 3;
+                                dan1[i].speedX = 0;
+                            }
+                        }
+                        i = 2;
+                        break;
+                    case KeyEvent.VK_W:
                         player1.speedY = -3;
-                        for(i = 0; i < 100; i++){
-                            if(dan1[i].fire == false) {
+                        player1.speedX = 0;
+                        //Cho nay choi lay, dung vong lap, lac vcl
+                        for (i = 0; i < 100; i++) {
+                            if (dan1[i].fire == false) {
                                 dan1[i].speedY = -3;
+                                dan1[i].speedX = 0;
                             }
                         }
                         break;
-                    case  KeyEvent.VK_A:
+                    case KeyEvent.VK_A:
                         player1.speedX = -3;
-                        for(i = 0; i < 100; i++){
-                            if(dan1[i].fire == false) {
+                        player1.speedY = 0;
+                        for (i = 0; i < 100; i++) {
+                            if (dan1[i].fire == false) {
                                 dan1[i].speedX = -3;
-                            }
-                            else{
                                 dan1[i].speedX = 0;
                             }
                         }
@@ -149,24 +163,15 @@ public class GameWindow extends Frame implements Runnable{
                     //Make by Nguyen Van Hung UET
                     case KeyEvent.VK_S:
                         player1.speedY = 3;
-                        for(i = 0; i < 100; i++) {
-                            if(dan1[i].fire == false) {
+                        player1.speedX = 0;
+                        for (i = 0; i < 100; i++) {
+                            if (dan1[i].fire == false) {
                                 dan1[i].speedY = 3;
-                            }
-                        }
-                        break;
-                    case KeyEvent.VK_D:
-                        player1.speedX = 3;
-                        for(i = 0; i < 100; i++) {
-                            if(dan1[i].fire == false) {
-                                dan1[i].speedX = 3;
-                            }else{
                                 dan1[i].speedX = 0;
                             }
                         }
-
                         break;
-                    //Nh?n phím cách ?? b?n
+                    //Nhan phim cách de ban
                     case (KeyEvent.VK_SPACE):
                         dan1[turnKey].speedY = -3;
                         dan1[turnKey].fire = true;
@@ -174,13 +179,17 @@ public class GameWindow extends Frame implements Runnable{
                         turnKey = turnKey % 100;
                         break;
                 }
+
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_D) {
+                    System.out.println(" VKD");
+                }
                 player1.speedX = 0;
                 player1.speedY = 0;
-                for(i = 0; i < 100; i++) {
+                for (i = 0; i < 100; i++) {
                     dan1[i].speedX = 0;
                     if (dan1[i].fire == true) {
                         dan1[i].speedY = -3;
@@ -188,7 +197,6 @@ public class GameWindow extends Frame implements Runnable{
                         dan1[i].speedY = 0;
                     }
                 }
-
             }
         });
         try {
@@ -220,23 +228,23 @@ public class GameWindow extends Frame implements Runnable{
     public void updateGame(){
         player1.update();
         player2.update();
-        for(j = 0; j < 100; j++) {
-            dan2[j].update();
-            //Khi ??i t??ng ??n bay ra kh?i màn hình
+        for(j = 0; j < 100; j++){
+            //Khi doi tuong Dan bay ra khoi man hinh
             if (dan2[j].positionY < -10) {
                 dan2[j].fire = false;
                 dan2[j].fireSpeed = 0;
                 dan2[j].speedX = player2.positionX;
             }
+            dan2[j].update();
         }
         //Make by Nguyen Van Hung UET
         for(i = 0; i < 100; i++) {
-            dan1[i].update();
-            //Khi ??i t??ng ??n bay ra kh?i màn hình
+            //Khi doi tuong Dann bay ra khoi màn hình
             if (dan1[i].positionY < -10) {
                 dan1[i].speedY = 0;
                 dan1[i].fire = false;
             }
+            dan1[i].update();
         }
     }
 
@@ -246,7 +254,7 @@ public class GameWindow extends Frame implements Runnable{
             try {
                 Thread.sleep(17);
                 updateGame();
-                //Cai nay de ??i t??ng ??n bay ra ngoài khung hình tr? v? ?n d??i con Máy bay
+                //Cai nay de Doi tuong Dan bay ra ngoài khung hình tro ve an duoi con Máy bay
                 for(i = 0; i < 100; i++) {
                     if (dan1[i].fire == false && (dan1[i].positionX != player1.positionX || dan1[i].positionY != player1.positionY)) {
                         dan1[i].positionY = player1.positionY + 10;

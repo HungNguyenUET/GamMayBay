@@ -1,7 +1,7 @@
 /**
- * Created by Thu Trang on 29/05/16.
+ * Created by Hung Nguyen on 29/05/16.
  */
-//L?p ??nh ngh?a ki?u Máy bay ?i?u khi?n b?ng Key
+//Lop dinh nghia kieu Máy bay dieu khien bang Key
 public class PlaneKey extends Plane {
     public PlaneKey(int positionX, int positionY, String strFileImage) {
         super(positionX, positionY, strFileImage);

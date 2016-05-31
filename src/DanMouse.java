@@ -15,7 +15,7 @@ public class DanMouse extends Dan {
     @Override
     public void update() {
         super.update();
-        if(fire == true){ //Khi ??n ?ang ? tr?ng thái b?n
+        if(fire == true){ //Khi Dan dang o trang thái ban
             positionX = speedX + 29;
             this.positionY -= fireSpeed;
         }else{
