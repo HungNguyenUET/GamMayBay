@@ -1,9 +1,11 @@
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Thu Trang on 28/05/16.
@@ -15,17 +17,21 @@ public class GameWindow extends Frame implements Runnable{
     PlaneMouse player2;
     DanKey[] dan1 = new DanKey[100];
     DanMouse[] dan2 = new DanMouse[100];
+    ArrayList<Bom> listBom = new ArrayList<Bom>();
+    int bomNumber = 0;
     int i = 0;
     int turnKey = 0; //Xac dinh luot ban cua doi tuong Dan nao
     int j = 0;
     int turnMouse = 0;//Xac dinh luot ban cua doi tuong Dan nao
-
+    int count = 0;
+    Enemy enemy;
     public GameWindow(){
         this.setSize(300, 400);
         this.setTitle("1932");
         this.setVisible(true);
         player1 = new PlaneKey(100, 300, "Resources/PLANE2.png");
         player2 = new PlaneMouse(200, 100, "Resources/PLANE3.png");
+        enemy = new Enemy(5, 50, "Resources/PLANE1.png");
         //Khoi tao 100 doi tuong Dan cho May bay di chuyen bang Key
         for(i = 0; i < 100; i++){
             dan1[i] = new DanKey(player1.positionX + 30, player1.positionY + 10);
@@ -99,11 +105,24 @@ public class GameWindow extends Frame implements Runnable{
 
             @Override
             public void mousePressed(MouseEvent e) {
-                dan2[turnMouse].fire = true;
-                dan2[turnMouse].fireSpeed = 3;
-                //Dung de ban lien tiep
-                turnMouse++;
-                turnMouse = turnMouse % 100;
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    dan2[turnMouse].fire = true;
+                    dan2[turnMouse].fireSpeed = 3;
+                    //Dung de ban lien tiep
+                    turnMouse++;
+                    turnMouse = turnMouse % 100;
+                }
+                if(SwingUtilities.isRightMouseButton(e)){
+                    /*bom = new Bom(e.getX() + 2, e.getY() + 3, "Resources/bomb.png");
+                    bom.positionY = e.getY() + 3;
+                    bom.positionX = e.getX() + 2;
+                    bom.speedY = 3;*/
+                    listBom.add(bomNumber, new Bom(e.getX(), e.getY(), "Resources/bomb.png"));
+                    listBom.get(bomNumber).speedY = 3;
+                    bomNumber++;
+                }
+
+
             }
 
             //Make by Nguyen Van Hung UET
@@ -222,12 +241,25 @@ public class GameWindow extends Frame implements Runnable{
             buffGraphics.drawImage(dan2[j].image, dan2[j].positionX, dan2[j].positionY, null);
         }
         buffGraphics.drawImage(player1.image, player1.positionX, player1.positionY, null);
+        buffGraphics.drawImage(player2.thanhMau, player2.positionX, player2.positionY +65, player2.healthPoint, 9, null);
         buffGraphics.drawImage(player2.image, player2.positionX, player2.positionY, null);
+        buffGraphics.drawImage(enemy.image, enemy.positionX, enemy.positionY, null);
+        if(listBom != null){
+            for(Bom bomCurrent : listBom){
+                buffGraphics.drawImage(bomCurrent.bomImg, bomCurrent.positionX, bomCurrent.positionY, null);
+            }
+        }
+        if(enemy.listDan != null){
+            for(DanEnemy danEnemyCurrent : enemy.listDan){
+                buffGraphics.drawImage(danEnemyCurrent.image, danEnemyCurrent.positionX, danEnemyCurrent.positionY, null);
+            }
+        }
         g.drawImage(bufferedImage, 0, 0, null);
     }
     public void updateGame(){
         player1.update();
         player2.update();
+        enemy.update();
         for(j = 0; j < 100; j++){
             //Khi doi tuong Dan bay ra khoi man hinh
             if (dan2[j].positionY < -10) {
@@ -246,6 +278,29 @@ public class GameWindow extends Frame implements Runnable{
             }
             dan1[i].update();
         }
+        if(kc(player1.positionX, player1.positionY, player2.positionX, player2.positionY) <= 100){
+           if(count == 60){
+               count = 0;
+               if(player2.healthPoint <  player2.maxHP){
+                   player1.bunusHp(player2);
+               }
+               System.out.println(player2.healthPoint);
+           }
+            count++;
+        }
+        if(listBom != null){
+            for(Bom currentBom : listBom){
+                currentBom.update();
+            }
+        }
+        if(bomNumber >= 100){
+            bomNumber = bomNumber%100;
+        }
+
+    }
+
+    public double kc(int x1, int y1, int x2, int y2){
+        return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
     }
 
     @Override

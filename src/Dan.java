@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -8,7 +9,7 @@ import java.io.IOException;
  */
 //Superclass cho các kieu Dan
 public class Dan {
-    Image image;
+    BufferedImage image;
     int positionX;
     int positionY;
     int speedY = 0;
@@ -23,6 +24,10 @@ public class Dan {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void draw(Graphics g){
+        g.drawImage(image, this.positionX, this.positionY, null);
     }
 
     public void update(){
