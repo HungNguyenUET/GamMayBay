@@ -26,7 +26,12 @@ public class Dan {
         }
     }
 
-    public void draw(Graphics g){
+    public void move(){
+        positionY += speedY;
+    }
+
+    public void draw(BufferedImage bufferedImage){
+        Graphics g = bufferedImage.getGraphics();
         g.drawImage(image, this.positionX, this.positionY, null);
     }
 

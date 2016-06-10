@@ -1,5 +1,4 @@
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -8,37 +7,37 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by Thu Trang on 28/05/16.
+ * Created by Hung Nguyen on 28/05/16.
  */
 public class GameWindow extends Frame implements Runnable{
     Image background;
     BufferedImage bufferedImage;
     PlaneKey player1;
     PlaneMouse player2;
-    DanKey[] dan1 = new DanKey[100];
-    DanMouse[] dan2 = new DanMouse[100];
-    ArrayList<Bom> listBom = new ArrayList<Bom>();
-    int bomNumber = 0;
-    int i = 0;
-    int turnKey = 0; //Xac dinh luot ban cua doi tuong Dan nao
-    int j = 0;
-    int turnMouse = 0;//Xac dinh luot ban cua doi tuong Dan nao
-    int count = 0;
-    Enemy enemy;
+    PlaneSupport player3;
+    Gift gift;
+    ArrayList<Plane> listFighter;
+    ArrayList<Plane> listEnemy;
+    int i = 3;
+
     public GameWindow(){
         this.setSize(300, 400);
         this.setTitle("1932");
         this.setVisible(true);
-        player1 = new PlaneKey(100, 300, "Resources/PLANE2.png");
+        gift = new Gift(20, 200);
+        player3 = new PlaneSupport(150, 200, "Resources/PLANE2.png");
+        player1 = new PlaneKey(100, 300, "Resources/PLANE4.png");
         player2 = new PlaneMouse(200, 100, "Resources/PLANE3.png");
-        enemy = new Enemy(5, 50, "Resources/PLANE1.png");
-        //Khoi tao 100 doi tuong Dan cho May bay di chuyen bang Key
-        for(i = 0; i < 100; i++){
-            dan1[i] = new DanKey(player1.positionX + 30, player1.positionY + 10);
-        }
-        //Khoi tao 100 doi tuong Dan cho may bay di chuyen bang Mouse
-        for(j = 0; j < 100; j++) {
-            dan2[j] = new DanMouse(player2.positionX + 30, player2.positionY + 10);
+        //Mang nay chua cac may bay chien dau duoc bonus mau khi o gan may bay support
+        listFighter = new ArrayList<>();
+        listFighter.add(0, player1);
+        listFighter.add(1, player2);
+        listEnemy = new ArrayList<>();
+        listEnemy.add(0, new Enemy(5, 50, "Resources/PLANE1.png", 0));
+        listEnemy.add(1, new Enemy(100, 60, "Resources/PLANE1.png", 20));
+        listEnemy.add(2, new Enemy(200, 70, "Resources/PLANE1.png", 40));
+        for(Plane curentEnemy: listEnemy){
+            player1.addRocket((Enemy)curentEnemy);
         }
         this.addWindowListener(new WindowListener() {
             @Override
@@ -84,18 +83,7 @@ public class GameWindow extends Frame implements Runnable{
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                player2.speedX = e.getX();
-                player2.speedY = e.getY();
-                for (j = 0; j < 100; j++) {
-                    if (dan2[j].fire == false) {
-                        dan2[j].speedX = e.getX();
-                        dan2[j].speedY = e.getY();
-
-                    } else {
-                        dan2[j].speedY = e.getY();
-                        dan2[j].fireSpeed = 3;
-                    }
-                }
+                player2.move(e);
             }
         });
         this.addMouseListener(new MouseListener() {
@@ -105,24 +93,12 @@ public class GameWindow extends Frame implements Runnable{
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    dan2[turnMouse].fire = true;
-                    dan2[turnMouse].fireSpeed = 3;
-                    //Dung de ban lien tiep
-                    turnMouse++;
-                    turnMouse = turnMouse % 100;
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    player2.banDan();
                 }
-                if(SwingUtilities.isRightMouseButton(e)){
-                    /*bom = new Bom(e.getX() + 2, e.getY() + 3, "Resources/bomb.png");
-                    bom.positionY = e.getY() + 3;
-                    bom.positionX = e.getX() + 2;
-                    bom.speedY = 3;*/
-                    listBom.add(bomNumber, new Bom(e.getX(), e.getY(), "Resources/bomb.png"));
-                    listBom.get(bomNumber).speedY = 3;
-                    bomNumber++;
+                if(e.getButton() == MouseEvent.BUTTON3){
+                    player2.dropBoom();
                 }
-
-
             }
 
             //Make by Nguyen Van Hung UET
@@ -148,54 +124,36 @@ public class GameWindow extends Frame implements Runnable{
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_D:
-                        player1.speedX = 3;
-                        player1.speedY = 0;
-                        for (i = 0; i < 100; i++) {
-                            if (dan1[i].fire == false) {
-                                dan1[i].speedX = 3;
-                                dan1[i].speedX = 0;
-                            }
-                        }
-                        i = 2;
+                        player1.right();
                         break;
                     case KeyEvent.VK_W:
-                        player1.speedY = -3;
-                        player1.speedX = 0;
-                        //Cho nay choi lay, dung vong lap, lac vcl
-                        for (i = 0; i < 100; i++) {
-                            if (dan1[i].fire == false) {
-                                dan1[i].speedY = -3;
-                                dan1[i].speedX = 0;
-                            }
-                        }
+                        player1.up();
                         break;
                     case KeyEvent.VK_A:
-                        player1.speedX = -3;
-                        player1.speedY = 0;
-                        for (i = 0; i < 100; i++) {
-                            if (dan1[i].fire == false) {
-                                dan1[i].speedX = -3;
-                                dan1[i].speedX = 0;
-                            }
-                        }
+                        player1.left();
                         break;
                     //Make by Nguyen Van Hung UET
                     case KeyEvent.VK_S:
-                        player1.speedY = 3;
-                        player1.speedX = 0;
-                        for (i = 0; i < 100; i++) {
-                            if (dan1[i].fire == false) {
-                                dan1[i].speedY = 3;
-                                dan1[i].speedX = 0;
-                            }
-                        }
+                        player1.down();
                         break;
                     //Nhan phim cách de ban
                     case (KeyEvent.VK_SPACE):
-                        dan1[turnKey].speedY = -3;
-                        dan1[turnKey].fire = true;
-                        turnKey++;
-                        turnKey = turnKey % 100;
+                        player1.banDan();
+                        break;
+                    case (KeyEvent.VK_F):
+                        player1.dropBoom();
+                        break;
+                    case  (KeyEvent.VK_UP):
+                        player3.up();
+                        break;
+                    case (KeyEvent.VK_DOWN):
+                        player3.down();
+                        break;
+                    case  (KeyEvent.VK_RIGHT):
+                        player3.right();
+                        break;
+                    case (KeyEvent.VK_LEFT):
+                        player3.left();
                         break;
                 }
 
@@ -203,19 +161,9 @@ public class GameWindow extends Frame implements Runnable{
 
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_D) {
-                    System.out.println(" VKD");
-                }
-                player1.speedX = 0;
-                player1.speedY = 0;
-                for (i = 0; i < 100; i++) {
-                    dan1[i].speedX = 0;
-                    if (dan1[i].fire == true) {
-                        dan1[i].speedY = -3;
-                    } else {
-                        dan1[i].speedY = 0;
-                    }
-                }
+                player1.stop();
+                player3.stop();
+
             }
         });
         try {
@@ -234,69 +182,80 @@ public class GameWindow extends Frame implements Runnable{
         }
         Graphics buffGraphics = bufferedImage.getGraphics();
         buffGraphics.drawImage(background, 0, 0, null);
-        for (i = 0; i < 100; i++) {
-            buffGraphics.drawImage(dan1[i].image, dan1[i].positionX, dan1[i].positionY, null);
+        if(player1.healthPoint > 0) {
+            player1.drawPlane(bufferedImage);
         }
-        for(j = 0; j < 100; j++) {
-            buffGraphics.drawImage(dan2[j].image, dan2[j].positionX, dan2[j].positionY, null);
+        if(player2.healthPoint > 0) {
+            player2.drawPlane(bufferedImage);
         }
-        buffGraphics.drawImage(player1.image, player1.positionX, player1.positionY, null);
-        buffGraphics.drawImage(player2.thanhMau, player2.positionX, player2.positionY +65, player2.healthPoint, 9, null);
-        buffGraphics.drawImage(player2.image, player2.positionX, player2.positionY, null);
-        buffGraphics.drawImage(enemy.image, enemy.positionX, enemy.positionY, null);
-        if(listBom != null){
-            for(Bom bomCurrent : listBom){
-                buffGraphics.drawImage(bomCurrent.bomImg, bomCurrent.positionX, bomCurrent.positionY, null);
+        if(player3.healthPoint > 0) {
+            player3.drawPlane(bufferedImage);
+        }
+        for(Plane currentEnemy : listEnemy){
+            if(currentEnemy.healthPoint > 0) {
+                currentEnemy.drawPlane(bufferedImage);
             }
         }
-        if(enemy.listDan != null){
-            for(DanEnemy danEnemyCurrent : enemy.listDan){
-                buffGraphics.drawImage(danEnemyCurrent.image, danEnemyCurrent.positionX, danEnemyCurrent.positionY, null);
-            }
-        }
+        gift.draw(bufferedImage);
         g.drawImage(bufferedImage, 0, 0, null);
     }
     public void updateGame(){
-        player1.update();
-        player2.update();
-        enemy.update();
-        for(j = 0; j < 100; j++){
-            //Khi doi tuong Dan bay ra khoi man hinh
-            if (dan2[j].positionY < -10) {
-                dan2[j].fire = false;
-                dan2[j].fireSpeed = 0;
-                dan2[j].speedX = player2.positionX;
-            }
-            dan2[j].update();
+        if(player1.healthPoint > 0) {
+            player1.update(listEnemy);
+        }else{
+            player1.positionX = - 100;
         }
+
+        if(player2.healthPoint > 0) {
+            player2.update(listEnemy);
+        }else{
+            player2.positionX = -100;
+        }
+
+        if(player3.healthPoint > 0) {
+            player3.update(listEnemy);
+        }else{
+            player3.positionY = -100;
+        }
+
+        for(Plane currentEnemy : listEnemy){
+            if(currentEnemy.healthPoint > 0) {
+                currentEnemy.update(listFighter);
+            }else{
+                currentEnemy.positionX = -100;
+            }
+        }
+
         //Make by Nguyen Van Hung UET
-        for(i = 0; i < 100; i++) {
-            //Khi doi tuong Dann bay ra khoi màn hình
-            if (dan1[i].positionY < -10) {
-                dan1[i].speedY = 0;
-                dan1[i].fire = false;
-            }
-            dan1[i].update();
-        }
-        if(kc(player1.positionX, player1.positionY, player2.positionX, player2.positionY) <= 100){
-           if(count == 60){
-               count = 0;
-               if(player2.healthPoint <  player2.maxHP){
-                   player1.bunusHp(player2);
-               }
-               System.out.println(player2.healthPoint);
-           }
-            count++;
-        }
-        if(listBom != null){
-            for(Bom currentBom : listBom){
+        player3.bonusHP(listFighter);
+
+        if(player1.listBom != null){
+            for(Bom currentBom : player1.listBom){
                 currentBom.update();
             }
         }
-        if(bomNumber >= 100){
-            bomNumber = bomNumber%100;
+        if(player2.listBom != null){
+            for(Bom currentBom : player2.listBom){
+                currentBom.update();
+            }
+        }
+        for(Dan currentDan : player1.listDan){
+            currentDan.move();
+        }
+        for(Dan currentDan : player2.listDan){
+            currentDan.move();
         }
 
+        for(Bom currentBom : player1.listBom){
+            if(currentBom.boomTime == 60){
+                player1.dropBoom2s();
+            }
+            currentBom.boomTime++;
+        }
+        if(gift.live == true){
+            player1.anQua(gift);
+            player3.anQua(gift, listFighter);
+        }
     }
 
     public double kc(int x1, int y1, int x2, int y2){
@@ -309,13 +268,6 @@ public class GameWindow extends Frame implements Runnable{
             try {
                 Thread.sleep(17);
                 updateGame();
-                //Cai nay de Doi tuong Dan bay ra ngoài khung hình tro ve an duoi con Máy bay
-                for(i = 0; i < 100; i++) {
-                    if (dan1[i].fire == false && (dan1[i].positionX != player1.positionX || dan1[i].positionY != player1.positionY)) {
-                        dan1[i].positionY = player1.positionY + 10;
-                        dan1[i].positionX = player1.positionX + 30;
-                    }
-                }
                 repaint();
             } catch (InterruptedException e) {
                 e.printStackTrace();
