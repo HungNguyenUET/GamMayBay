@@ -7,11 +7,11 @@ import java.util.List;
  */
 public class PlaneSupport extends Plane implements ISupport {
     int count = 0;
+    ArrayList<IFighter> listFighter = new ArrayList<>();
+
     public PlaneSupport(int positionX, int positionY, String strFileImage) {
         super(positionX, positionY, strFileImage);
     }
-
-
 
     @Override
     public void bonusHP(List<Plane> listPlane) {
@@ -35,6 +35,11 @@ public class PlaneSupport extends Plane implements ISupport {
     @Override
     public void bunusHp(Plane plane) {
         plane.healthPoint += 10;
+    }
+
+    @Override
+    public void anQua(Gift gift) {
+
     }
 
     public void up(){
@@ -92,19 +97,28 @@ public class PlaneSupport extends Plane implements ISupport {
     }
 
     @Override
-    public void anQua(Gift gift, ArrayList<Plane> listFighter) {
+    public void anQua(Gift gift, ArrayList<IFighter> listFighter) {
         //super.anQua(gift);
         Rectangle recGift = new Rectangle(gift.positionX, gift.positionY, gift.giftImage.getWidth(), gift.giftImage.getHeight());
         Rectangle recPlane = new Rectangle(this.positionX, this.positionY, this.image.getWidth(), this.image.getHeight());
         if(recPlane.intersects(recGift)){
             gift.live = false;
             gift.positionY = 500;
-            for(Plane currentPlane : listFighter){
-                if(currentPlane.healthPoint < currentPlane.maxHP){
-                    currentPlane.healthPoint += 30;
-                    currentPlane.healthPoint = currentPlane.healthPoint - (currentPlane.healthPoint%currentPlane.maxHP);
+            for(IFighter currentPlane : listFighter){
+                if(((Plane)currentPlane).healthPoint < ((Plane)currentPlane).maxHP){
+                    currentPlane.tangMau();
                 }
             }
         }
+    }
+
+    @Override
+    public void addFighter(IFighter fighter) {
+        listFighter.add(fighter);
+    }
+
+    @Override
+    public void deleteFighter(IFighter fighter) {
+        listFighter.add(fighter);
     }
 }

@@ -8,4 +8,5 @@ public interface IFighter {
     ArrayList<Bom> listBom = new ArrayList<>();
     void dropBoom();
     void banDan();
+    void tangMau();
 }

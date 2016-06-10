@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -6,4 +7,8 @@ import java.util.List;
 public interface ISupport {
     void bonusHP(List<Plane> listPlane);
     void bunusHp(Plane plane);
+    void anQua(Gift gift);
+    void anQua(Gift gift, ArrayList<IFighter> listFighter);
+    void addFighter(IFighter fighter);
+    void deleteFighter(IFighter fighter);
 }

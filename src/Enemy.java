@@ -47,6 +47,11 @@ public class Enemy extends Plane implements IFighter,IRocket{
     }
 
     @Override
+    public void tangMau() {
+
+    }
+
+    @Override
     public void drawPlane(BufferedImage bufferedImage) {
         Graphics bufferGraphics = bufferedImage.getGraphics();
         bufferGraphics.drawImage(image, positionX, positionY, null);

@@ -88,6 +88,12 @@ public class PlaneKey extends Plane implements IFighter, ISubject{
     }
 
     @Override
+    public void tangMau() {
+        this.healthPoint += 30;
+        this.healthPoint = this.healthPoint - (this.healthPoint%this.maxHP);
+    }
+
+    @Override
     public void drawPlane(BufferedImage bufferedImage) {
         super.drawPlane(bufferedImage);
         for(Dan curretnDan : listDan){
@@ -116,7 +122,6 @@ public class PlaneKey extends Plane implements IFighter, ISubject{
 
     }
 
-    @Override
     public void anQua(Gift gift) {
         Rectangle recGift = new Rectangle(gift.positionX, gift.positionY, gift.giftImage.getWidth(), gift.giftImage.getHeight());
         Rectangle recPlane = new Rectangle(this.positionX, this.positionY, this.image.getWidth(), this.image.getHeight());

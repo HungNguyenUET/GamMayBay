@@ -53,6 +53,12 @@ public class PlaneMouse extends Plane implements  IFighter{
     }
 
     @Override
+    public void tangMau() {
+        this.healthPoint += 30;
+        this.healthPoint = this.healthPoint - (this.healthPoint%this.maxHP);
+    }
+
+    @Override
     public void drawPlane(BufferedImage bufferedImage) {
         super.drawPlane(bufferedImage);
         for(Dan curretnDan : listDan){

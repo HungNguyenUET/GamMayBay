@@ -49,13 +49,7 @@ public class Plane {
 
     }
 
-    public void anQua(Gift gift){
 
-    }
-
-    public void anQua(Gift gift, ArrayList<Plane> listFighter){
-
-    }
 
     public void update(ArrayList<Plane> listPlane){}
 

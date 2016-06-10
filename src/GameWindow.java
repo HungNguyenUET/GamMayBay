@@ -18,6 +18,7 @@ public class GameWindow extends Frame implements Runnable{
     Gift gift;
     ArrayList<Plane> listFighter;
     ArrayList<Plane> listEnemy;
+    ArrayList<IFighter> listTangMau;
     int i = 3;
 
     public GameWindow(){
@@ -39,6 +40,9 @@ public class GameWindow extends Frame implements Runnable{
         for(Plane curentEnemy: listEnemy){
             player1.addRocket((Enemy)curentEnemy);
         }
+        listTangMau = new ArrayList<>();
+        listTangMau.add(0, player1);
+        listTangMau.add(1, player2);
         this.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -254,7 +258,7 @@ public class GameWindow extends Frame implements Runnable{
         }
         if(gift.live == true){
             player1.anQua(gift);
-            player3.anQua(gift, listFighter);
+            player3.anQua(gift, listTangMau);
         }
     }
 
