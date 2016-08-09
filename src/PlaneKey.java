@@ -1,5 +1,8 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,7 +125,7 @@ public class PlaneKey extends Plane implements IFighter, ISubject{
 
     }
 
-    public void anQua(Gift gift) {
+    public void anQua(Gift gift, ArrayList<Plane> listEnemy) {
         Rectangle recGift = new Rectangle(gift.positionX, gift.positionY, gift.giftImage.getWidth(), gift.giftImage.getHeight());
         Rectangle recPlane = new Rectangle(this.positionX, this.positionY, this.image.getWidth(), this.image.getHeight());
         if(recPlane.intersects(recGift)){
@@ -132,6 +135,15 @@ public class PlaneKey extends Plane implements IFighter, ISubject{
                 this.healthPoint += 50;
                 this.healthPoint = this.healthPoint - (this.healthPoint%this.maxHP);
             }
+            for (Plane currentEnemy: listEnemy){
+                currentEnemy.healthPoint = 0;
+                try {
+                    currentEnemy.image = ImageIO.read(new File("Resources/fire.png"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 }

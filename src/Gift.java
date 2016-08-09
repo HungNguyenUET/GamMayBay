@@ -17,7 +17,7 @@ public class Gift {
         this.positionY = positionY;
         this.live = true;
         try {
-            giftImage = ImageIO.read(new File("Resources/gift2.png"));
+            giftImage = ImageIO.read(new File("Resources/bomb.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

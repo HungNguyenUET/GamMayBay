@@ -19,13 +19,15 @@ public class GameWindow extends Frame implements Runnable{
     ArrayList<Plane> listFighter;
     ArrayList<Plane> listEnemy;
     ArrayList<IFighter> listTangMau;
-    int i = 3;
+    int count = 0;
+
 
     public GameWindow(){
         this.setSize(300, 400);
         this.setTitle("1932");
         this.setVisible(true);
         gift = new Gift(20, 200);
+        count = 0;
         player3 = new PlaneSupport(150, 200, "Resources/PLANE2.png");
         player1 = new PlaneKey(100, 300, "Resources/PLANE4.png");
         player2 = new PlaneMouse(200, 100, "Resources/PLANE3.png");
@@ -140,7 +142,7 @@ public class GameWindow extends Frame implements Runnable{
                     case KeyEvent.VK_S:
                         player1.down();
                         break;
-                    //Nhan phim cách de ban
+                    //Nhan phim cï¿½ch de ban
                     case (KeyEvent.VK_SPACE):
                         player1.banDan();
                         break;
@@ -198,6 +200,10 @@ public class GameWindow extends Frame implements Runnable{
         for(Plane currentEnemy : listEnemy){
             if(currentEnemy.healthPoint > 0) {
                 currentEnemy.drawPlane(bufferedImage);
+            }else{
+                if(count < 30){
+                    currentEnemy.drawPlane(bufferedImage);
+                }
             }
         }
         gift.draw(bufferedImage);
@@ -226,7 +232,11 @@ public class GameWindow extends Frame implements Runnable{
             if(currentEnemy.healthPoint > 0) {
                 currentEnemy.update(listFighter);
             }else{
-                currentEnemy.positionX = -100;
+                count++;
+                if(count > 30){
+                    currentEnemy.positionX = -100;
+                    System.out.println("no");
+                }
             }
         }
 
@@ -257,7 +267,7 @@ public class GameWindow extends Frame implements Runnable{
             currentBom.boomTime++;
         }
         if(gift.live == true){
-            player1.anQua(gift);
+            player1.anQua(gift, listEnemy);
             player3.anQua(gift, listTangMau);
         }
     }
@@ -273,6 +283,7 @@ public class GameWindow extends Frame implements Runnable{
                 Thread.sleep(17);
                 updateGame();
                 repaint();
+                System.out.println(count);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
